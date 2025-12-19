@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Tillykke!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #ffd700, #ff9900);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        #startBtn {
+            font-size: 1.5em;
+            padding: 20px 40px;
+            cursor: pointer;
+            background-color: #d60000;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            animation: pulse 1s infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        #startBtn:hover {
+            background-color: #a80000;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        #lydHint {
+            font-size: 1.2em;
+            color: #222;
+            display: none;
+            margin-bottom: 20px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        video {
+            display: none;
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎉 Tillykke!</h1>
+    <p>Du har vundet <strong>1 million kroner</strong> 🤑</p>
+    <button id="startBtn">Tryk her for at indløse din præmie 🎵</button>
+    <p id="lydHint">🔊 Husk lyd! Skru op for at høre din præmie</p>
+
+    <!-- Ambient lyd -->
+    <audio id="ambient" loop>
+        <source src="ambient.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- MP4 video -->
+    <video id="video" playsinline>
+        <source src="never-gonna-give-you-up.mp4" type="video/mp4">
+    </video>
+
+    <script>
+        const btn = document.getElementById("startBtn");
+        const ambient = document.getElementById("ambient");
+        const video = document.getElementById("video");
+        const lydHint = document.getElementById("lydHint");
+
+        btn.addEventListener("click", () => {
+            // Start ambient lyd med fade-in
+            ambient.volume = 0;
+            ambient.play();
+            const targetVolume = 0.06;
+            const steps = 20;
+            let step = 0;
+            const fade = setInterval(() => {
+                step++;
+                ambient.volume = (targetVolume / steps) * step;
+                if (step >= steps) clearInterval(fade);
+            }, 50); // 1 sekund fade-in
+
+            // Vis “Husk lyd 🔊” besked
+            lydHint.style.display = "block";
+
+            // Baggrund ændres lidt dramatisk
+            document.body.style.background = "radial-gradient(circle, #fff176, #ff5722)";
+
+            // Start video efter 10 sekunder
+            setTimeout(() => {
+                ambient.pause();
+                document.body.innerHTML = "";
+                document.body.appendChild(video);
+                video.style.display = "block";
+                video.volume = 1.0;
+                video.play();
+            }, 10000);
+        });
+    </script>
+
+</body>
+</html>
