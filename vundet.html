@@ -77,7 +77,7 @@ video {
 </audio>
 
 <div id="videoContainer">
-    <video id="video" playsinline muted>
+    <video id="video" playsinline muted loop webkit-playsinline preload="auto">
         <source src="never-gonna-give-you-up.mp4" type="video/mp4">
     </video>
 </div>
@@ -94,6 +94,9 @@ btn.addEventListener("click", () => {
     ambient.volume = 0;
     ambient.play();
 
+    // Start video i baggrund (muted som standard)
+    try { video.play(); } catch (e) { /* ignore */ }
+
     // Fade-in
     let v = 0;
     const fade = setInterval(() => {
@@ -105,19 +108,19 @@ btn.addEventListener("click", () => {
     lydHint.style.display = "block";
     document.body.style.background = "radial-gradient(circle, #fff176, #ff5722)";
 
-    // Start video muted IMMEDIATELY (vigtigt for iOS)
-    container.style.display = "block";
-    video.play();
-
-    // Efter 5 sekunder: fuld Rickroll 😈
+    // Efter 10 sekunder: fuld Rickroll 😈
     setTimeout(() => {
         ambient.pause();
-        video.muted = false;
-        video.volume = 1.0;
+        container.style.display = "block";
 
         document.body.innerHTML = "";
         document.body.appendChild(container);
-    }, 5000);
+        
+        // Reset video tid til 0 og start igen unmuted
+        video.currentTime = 0;
+        video.muted = false;
+        video.volume = 1.0;
+    }, 10000);
 });
 </script>
 
